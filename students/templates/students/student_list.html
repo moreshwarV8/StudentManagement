@@ -1,0 +1,61 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Students - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Students</h2>
+    <a href="{% url 'student_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Student
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by roll number, name, or department" value="{{ request.GET.search }}">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.department.name }}</td>
+                        <td>{{ student.semester }}</td>
+                        <td>
+                            <a href="{% url 'student_edit' student.pk %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No students found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

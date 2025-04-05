@@ -1,0 +1,38 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Home - Student Management System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-user-graduate fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3">Total Students</h5>
+                    <p class="card-text display-4 fw-bold text-primary mb-4">{{ total_students }}</p>
+                    <a href="{% url 'student_list' %}" class="btn btn-primary">
+                        <i class="fas fa-users me-2"></i>View Students
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-building-columns fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3">Total Departments</h5>
+                    <p class="card-text display-4 fw-bold text-primary mb-4">{{ total_departments }}</p>
+                    <a href="{% url 'admin:students_department_changelist' %}" class="btn btn-primary">
+                        <i class="fas fa-cog me-2"></i>Manage Departments
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
