@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-(iz=^j$z+gydcg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['ec2-13-60-162-30.eu-north-1.compute.amazonaws.com']  # Replace with your EC2 public IP or domain name in production
+ALLOWED_HOSTS = ['13.60.162.30']  # Replace with your EC2 public IP or domain name in production
 
 
 # Application definition
