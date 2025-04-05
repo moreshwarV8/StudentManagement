@@ -30,7 +30,8 @@ A modern web-based Student Management System built with Django and PostgreSQL. T
 ### 2. Connect to EC2
 ```bash
 chmod 400 your-key.pem
-ssh -i your-key.pem ubuntu@your-ec2-public-ip
+ssh -i your-key.pem ubuntu@ec2-13-60-162-30.eu-north-1.compute.amazonaws.com
+
 ```
 
 ### 3. Install Dependencies
@@ -59,14 +60,39 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Configure Environment Variables
+### 5. Setup PostgreSQL
 ```bash
-# Create .env file
-echo "DJANGO_SECRET_KEY='your-secret-key'" > .env
-echo "DATABASE_URL='postgresql://dbuser:password@localhost:5432/dbname'" >> .env
+# Start PostgreSQL service
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Switch to postgres user
+sudo -u postgres psql
+
+# In PostgreSQL shell, create database and user
+CREATE DATABASE student_management;
+CREATE USER dbuser WITH PASSWORD 'your-secure-password';
+ALTER ROLE dbuser SET client_encoding TO 'utf8';
+ALTER ROLE dbuser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE dbuser SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE student_management TO dbuser;
+\q
 ```
 
-### 6. Setup Gunicorn
+### 6. Configure Environment Variables
+```bash
+# Create .env file
+echo "DJANGO_SECRET_KEY='your-secure-secret-key'" > .env
+echo "DATABASE_URL='postgresql://dbuser:your-secure-password@localhost:5432/student_management'" >> .env
+
+# Apply database migrations
+python manage.py migrate
+
+# Create superuser
+python manage.py createsuperuser
+```
+
+### 7. Setup Gunicorn
 ```bash
 # Create gunicorn service
 sudo nano /etc/systemd/system/gunicorn.service
@@ -92,7 +118,7 @@ ExecStart=/home/ubuntu/student_management/venv/bin/gunicorn \
 WantedBy=multi-user.target
 ```
 
-### 7. Configure Nginx
+### 8. Configure Nginx
 ```bash
 sudo nano /etc/nginx/sites-available/student_management
 ```
@@ -116,7 +142,7 @@ server {
 }
 ```
 
-### 8. Enable and Start Services
+### 9. Enable and Start Services
 ```bash
 # Create symbolic link
 sudo ln -s /etc/nginx/sites-available/student_management /etc/nginx/sites-enabled
@@ -130,12 +156,12 @@ sudo systemctl enable gunicorn
 sudo systemctl restart nginx
 ```
 
-### 9. Collect Static Files
+### 10. Collect Static Files
 ```bash
 python manage.py collectstatic
 ```
 
-### 10. Final Steps
+### 11. Final Steps
 - Update ALLOWED_HOSTS in settings.py with your EC2 public IP or domain
 - Configure your domain DNS if using a custom domain
 - Setup SSL with Let's Encrypt (recommended)
